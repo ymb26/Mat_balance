@@ -16,7 +16,6 @@ def count_timestep(date1, date2, step):
         if current_step >= end:
             print(current_step - end)
     print(count_of_timestep)
-    print("!", int((end - start).days))
 
 
 count_timestep('2023-01-01', '2024-01-16', 7)

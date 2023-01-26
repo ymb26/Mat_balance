@@ -1,0 +1,4 @@
+Pressure   B   Viscosity   fv_factor
+1   1   0.7 0
+50  1.3 0.2 100
+100 1.2 0.3 100

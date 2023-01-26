@@ -4,9 +4,9 @@ from datetime import date
 
 class Grid:
     def __init__(self, pore_volume, initial_pressure):
-        self._Gas = None
-        self._Oil = None
-        self._Water = None
+        self._Gas = None 1
+        self._Oil = None 2
+        self._Water = None 3
         self._Calculate = None
         self._pore_volume = pore_volume
         self._initial_pressure = initial_pressure

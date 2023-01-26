@@ -10,9 +10,39 @@ class Grid:
         self.current_pressure = list()
         self._amount_of_phases = 0
 
-    def add_property_of_phase(self, name, density, saturation):
+        self.base_pressure = 0
+        self.porosity = 0
+        self.oil_saturation = 0
+        self.water_saturation = 0
+        self.oil_fv_factor = 0
+        self.gas_fv_factor = 0
+        self.water_fv_factor = 0
+        self.OOIP = 0
+        self.GOIP = 0
+        self.WOIP = 0
+        self.oil_density = 0
+        self.gas_density = 0
+        self.water_density = 0
+
+    def put_base_phases_parameters(self, pressure, porosity, oil_saturation, oil_fv_factor, oil_density, gas_density,
+                                   water_density, OOIP, GOIP):
+        self.base_pressure = pressure
+        self.porosity = porosity
+        self.oil_saturation = oil_saturation
+        self.water_saturation = 1 - oil_saturation
+        self.oil_fv_factor = 1 / oil_fv_factor
+        self.gas_fv_factor = 0      #
+        self.water_fv_factor = 0    #
+        self.OOIP = OOIP
+        self.GOIP = GOIP
+        self.WOIP = 0       #
+        self.oil_density = oil_density
+        self.gas_density = gas_density
+        self.water_density = water_density
+
+    def add_property_of_phase(self, name):
         self._Phase.append(self._amount_of_phases)
-        self._Phase[self._amount_of_phases] = Fluid(name, self._amount_of_phases, density, saturation, self._timesteps, self._days_in_step)
+        self._Phase[self._amount_of_phases] = Fluid(name, self._amount_of_phases, self._timesteps)
         self._amount_of_phases += 1
 
     @property
@@ -41,36 +71,31 @@ class Grid:
         for i in range(len(self._timesteps)):
             print(self._timesteps[i], self._days_in_step[i])
 
-    def calculate_something(self):
-        x = 0
-        for i in range(self._amount_of_phases):
-            x += self._Phase[i].do_it()
-        print(x)
+    def pointer_on_phase(self, name_of_phase):
+        for i in self._Phase:
+            if name_of_phase.lower() == i.name.lower():
+                return i
+        print("Wrong phase")
 
 
 class Fluid(Grid):
-    def __init__(self, name, index, density, saturation, timesteps, days_in_step):
+    def __init__(self, name_of_phase, index, timesteps):
         super().__init__()
         self.index = index
-        self.name = name
-        self.density = density
-        self.saturation = saturation
-        self._timesteps = timesteps
-        self._days_in_step = days_in_step
-        self.current_density = [None] * len(self._timesteps)
-
-    def do_it(self):
-        print(self._timesteps)
-        return float(self.saturation)
-
-    def print_density(self):
-        for i in self.current_density:
-            print(i)
+        self.name = name_of_phase
+        self.weight_in_plast = [None] * len(timesteps)
+        self.weight_extraction = [None] * len(timesteps)
+        self.volume = [None] * len(timesteps)
+        self.production = [None] * len(timesteps)
+        self.current_density = [None] * len(timesteps)
 
 
 TP22 = Grid()
 TP22.fill_timesteps('2023-01-01', '2023-02-01', 7)
-TP22.print_statistic()
-TP22.add_property_of_phase('Oil', 793, 0.600)
-TP22.add_property_of_phase('Gas', 330, 0.700)
-TP22.Phase[0].print_density()
+TP22.put_base_phases_parameters(210, 0.22, 0.6, 0.7, 0.793, 0.0007, 1, 839, 84)     # base_pressure, porosity, oil_saturation, oil_fv_factor, oil_density, gas_density, water_density, OOIP, GOIP
+TP22.add_property_of_phase('Oil')
+TP22.add_property_of_phase('Gas')
+TP22.add_property_of_phase("Gas_in_oil")
+TP22.add_property_of_phase('Water')
+print(TP22.pointer_on_phase("Gas").name)
+
